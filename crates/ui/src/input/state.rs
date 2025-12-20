@@ -1222,10 +1222,22 @@ impl InputState {
             return;
         }
 
-        // Double click to select word
-        if event.button == MouseButton::Left && event.click_count == 2 {
-            self.select_word(offset, window, cx);
-            return;
+        if event.button == MouseButton::Left {
+            if event.click_count == 2 {
+                // Double click to select a word
+                self.select_word(offset, window, cx);
+
+                return;
+            } else if event.click_count == 3 {
+                // Triple click to select a line
+                let line_start_offset = self.start_of_line();
+                let line_end_offset = self.end_of_line();
+
+                self.move_to(line_start_offset, None, cx);
+                self.select_to(line_end_offset, cx);
+
+                return;
+            }
         }
 
         // Show Mouse context menu
